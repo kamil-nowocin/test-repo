@@ -5,7 +5,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
-    open-pull-requests-limit: '5'
+    open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] Gradle Dependencies update'
     reviewers:
@@ -15,7 +15,7 @@ updates:
     directory: '.github/scripts/'
     schedule:
       interval: 'daily'
-    open-pull-requests-limit: '5'
+    open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] NPM Dependencies update'
     reviewers:
@@ -25,7 +25,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
-    open-pull-requests-limit: '5'
+    open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] GitHub Actions update'
     reviewers:
