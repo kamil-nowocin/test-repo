@@ -19,20 +19,14 @@ jobs:
     runs-on: ubuntu-latest
     name: "Validate PR 🛠️"
     steps:
-
       - name: "Checkout Code"
         uses: actions/checkout@v4
 
       - name: "Grant execute permission for all scripts in .github/scripts"
         run: chmod +x ${{ github.workspace }}/.github/scripts/*
 
-      #      - name: "Validate PR Title"
-      #        uses: actions/github-script@v7
-      #        with:
-      #          script: |
-      #            const validatePrTitle = require('./.github/scripts/pr-title-comment.js');
-      #            await validatePrTitle(github, context, core);
-      - name: Validate PR title
+      - name: "Validate PR title"
+        if: github.actor != 'dependabot[bot]'
         uses: actions/github-script@v7
         with:
           script: |
@@ -58,7 +52,7 @@ jobs:
             Your PR title matches the required format.
           FAIL_MESSAGE: |
             ### Gradle Build Failed! ❌
-          
+            
             Your PR title doesn't match the required format.
             Please ensure the PR title follows the required format:  `[TEST-XXXXX]: Your description`
             You can check the [TEST | Project Compilation #{run_number}]({run_url}) logs for more information.
