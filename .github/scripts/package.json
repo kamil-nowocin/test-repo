@@ -1,0 +1,15 @@
+{
+  "name": "github-actions-scripts",
+  "version": "1.0.0",
+  "description": "Scripts for GitHub Actions workflow",
+  "main": "index.js",
+  "scripts": {
+    "manage-labels": "node manage-labels.js",
+    "post-comment": "node post-comment.js",
+    "send-slack-notification": "node send-slack-notification.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.2",
+    "axios": "^1.7.7"
+  }
+}

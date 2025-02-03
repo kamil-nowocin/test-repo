@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+    id 'io.freefair.lombok' version '8.12'
+    id 'com.diffplug.spotless' version '7.0.2'
+    id 'io.freefair.aspectj.post-compile-weaving' version '8.12'
+}
+
+allprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+    allure {
+        version = '2.29.0'
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'io.qameta.allure'
+    apply plugin: 'io.freefair.lombok'
+    apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'io.freefair.aspectj.post-compile-weaving'
+
+    dependencies {
+        // MAIN LIBRARIES
+        // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+        implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.28.1'
+        // https://mvnrepository.com/artifact/org.testng/testng
+        implementation group: 'org.testng', name: 'testng', version: '7.3.0'
+        // https://mvnrepository.com/artifact/org.assertj/assertj-core
+        implementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
+
+        // SUPPORT LIBRARIES
+        // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
+        implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
+        // https://mvnrepository.com/artifact/org.projectlombok/lombok
+        implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+
+        // LOGGING LIBRARIES
+        // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.16'
+
+        // REPORTING LIBRARIES
+        // https://mvnrepository.com/artifact/io.qameta.allure/allure-testng
+        implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.29.1'
+
+        // ADDITIONAL LIBRARIES
+        // https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+        implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.22.1'
+        // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+        implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.22.1'
+    }
+
+    configurations.configureEach {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
+
+    spotless {
+        java {
+            licenseHeader '/* (C) Kamil Nowocin ($YEAR) | Tests */'
+            cleanthat()
+            removeUnusedImports()
+            importOrder()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    compileJava.dependsOn 'spotlessApply'
+
+    tasks.register('testJavadoc', Javadoc) {
+        source = sourceSets.test.allJava + sourceSets.main.allJava
+        classpath = sourceSets.test.compileClasspath
+        destinationDir = file("${layout.buildDirectory.get()}/docs/java-documentation")
+    }
+}

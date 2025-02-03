@@ -1,0 +1,32 @@
+version: 2
+
+updates:
+  - package-ecosystem: 'gradle'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    open-pull-requests-limit: '5'
+    commit-message:
+      prefix: '[TEST-🤖] Gradle Dependencies update'
+    reviewers:
+      - 'kamil-nowocin'
+
+  - package-ecosystem: 'npm'
+    directory: '.github/scripts/'
+    schedule:
+      interval: 'daily'
+    open-pull-requests-limit: '5'
+    commit-message:
+      prefix: '[TEST-🤖] NPM Dependencies update'
+    reviewers:
+      - 'kamil-nowocin'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    open-pull-requests-limit: '5'
+    commit-message:
+      prefix: '[TEST-🤖] GitHub Actions update'
+    reviewers:
+      - 'kamil-nowocin'

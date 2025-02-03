@@ -1,0 +1,9 @@
+<a href="https://raw.githubusercontent.com/kamil-nowocin/test/main/docs/images/404-not-found-service-mastercard.jpg">
+    <img src="images/404-not-found-service-mastercard.jpg" alt="404 Full Preview" width="300"/>
+</a>
+
+| Screenshot                                                                                                                                                                                                                                               | Code Name | Description |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|-------------|
+| <a href="https://raw.githubusercontent.com/kamil-nowocin/test/main/docs/images/404-not-found-service-mastercard.jpg"><img src="images/404-not-found-service-mastercard.jpg" alt="404 Full Preview" width="300"/></a>                                     |           |             |
+| ![404-not-found-service-mastercard.jpg](images/404-not-found-service-mastercard.jpg)                                                                                                                                                                     | 123       | 123         |
+| <a href="https://github.com/kamil-nowocin/test/blob/main/docs/images/404-not-found-service-mastercard.jpg" target="_blank"><img src="https://github.com/kamil-nowocin/test/blob/main/docs/images/404-not-found-service-mastercard.jpg" width="700"/></a> | 456       | 456         |

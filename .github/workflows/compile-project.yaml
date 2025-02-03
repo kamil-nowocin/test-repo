@@ -1,0 +1,128 @@
+name: TEST | Project Compilation
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+run-name: "👷🚧[#${{ github.run_number }}][BUILD] Compiling project \"${{ github.event.pull_request.title }}\" | Commit SHA: \"${{ github.sha }}\""
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: "Compile Project 🛠️"
+    permissions: write-all
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "Set up Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: "Install NPM Dependencies"
+        run: npm install
+        working-directory: .github/scripts
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-  
+
+      - name: "Set up Java"
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: "Cache Gradle packages"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: "Grant execute permission for gradlew"
+        run: chmod +x ./gradlew
+
+      - name: "🚨 Run Gradle build without tests 🚨"
+        id: gradle_build
+        run: ./gradlew compileTestJava
+        continue-on-error: true
+
+      - name: "Set build result"
+        if: always()
+        run: |
+          if [[ "${{ steps.gradle_build.outcome }}" == "failure" ]]; then
+            echo "build_result=failure" >> $GITHUB_ENV
+            exit 1
+          else
+            echo "build_result=success" >> $GITHUB_ENV
+          fi
+
+      - name: "Apply labels on PR"
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const manageLabels = require('./.github/scripts/manage-labels.js');
+            await manageLabels(github, context);
+
+      #      - name: "Post comment on PR"
+      #        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always()
+      #        uses: actions/github-script@v7
+      #        with:
+      #          script: |
+      #            const postComment = require('./.github/scripts/post-comment.js');
+      #            await postComment(github, context);
+
+      - name: Post build result
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const postComment = require('./.github/scripts/postComment.js');
+            
+            const task = process.env.TASK;
+            const passMessage = process.env.PASS_MESSAGE;
+            const failMessage = process.env.FAIL_MESSAGE;
+            const buildResult = process.env.build_result;
+            
+            await postComment(github, context, core, {
+              task,
+              buildResult,
+              passMessage,
+              failMessage
+            });
+        env:
+          TASK: 'build-result'
+          build_result: ${{ env.build_result }}
+          PASS_MESSAGE: |
+            ### Gradle Build succeeded! ✅
+            
+            Your PR is ready for review.
+          FAIL_MESSAGE: |
+            ### Gradle Build failed! ❌
+            
+            Your PR isn't ready for review.
+            You can check the [TEST | Project Compilation #{run_number}]({run_url}) logs for more information.
+
+      - name: "Send Slack notification"
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always() && env.build_result == 'failure'
+        run: npm run send-slack-notification ${{ env.build_result }} "${{ github.event.pull_request.title }}" ${{ github.event.pull_request.user.login }} ${{ github.repository }} ${{ github.run_id }} ${{ github.event.pull_request.number }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        working-directory: .github/scripts

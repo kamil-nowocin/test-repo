@@ -1,0 +1,8 @@
+addReviewers: true
+addAssignees: author
+reviewers:
+  - kamil-nowocin
+numberOfReviewers: 0
+filterLabels:
+  exclude:
+    - build-failure

@@ -1,0 +1,186 @@
+name: TEST | Regression Testing [DEV REPO]
+
+on:
+  workflow_call:
+    inputs:
+      testModule:
+        required: true
+        type: string
+      testEnvironment:
+        required: true
+        type: string
+      testGroup:
+        required: true
+        type: string
+      enablePKCE:
+        required: true
+        type: string
+      enableTestRetry:
+        required: true
+        type: boolean
+      enableXrayReport:
+        required: true
+        type: boolean
+      enableSlackReport:
+        required: true
+        type: boolean
+      triggeredFromDevRepo:
+        required: true
+        type: boolean
+    secrets:
+      XRAY_CLIENT_ID:
+        required: true
+      XRAY_CLIENT_SECRET:
+        required: true
+      SLACK_TOKEN:
+        required: true
+      MY_GITHUB_SECRET:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: "Build & Execute Tests 🛠️"
+    env:
+      # Common
+      BUILD_NUMBER: ${{ github.run_number }}
+      # Settings
+      TEST_MODULE: ${{ inputs.testModule }}
+      TEST_ENVIRONMENT: ${{ inputs.testEnvironment }}
+      TEST_GROUP: ${{ inputs.testGroup }}
+      ENABLE_PKCE: ${{ inputs.enablePKCE }}
+      ENABLE_TEST_RETRY: ${{ inputs.enableTestRetry }}
+      ENABLE_XRAY_REPORT: ${{ inputs.enableXrayReport }}
+      ENABLE_SLACK_REPORT: ${{ inputs.enableSlackReport }}
+      # Settings - Set by 'determine_module.sh'
+      TEST_MODULES: ""
+      # Secrets
+      XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+      XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      MY_GITHUB_SECRET: ${{ secrets.MY_GITHUB_SECRET }}
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          repository: kamil-nowocin/workflowTests
+          path: "test-repo"
+
+      - name: "Set working directory"
+        run: echo "WORKING_DIRECTORY=$(pwd)/test-repo" >> $GITHUB_ENV
+        shell: bash
+
+      - name: "Set up Java"
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: "Grant execute permission for gradlew"
+        run: chmod +x ${{ env.WORKING_DIRECTORY }}/gradlew
+        shell: bash
+
+      - name: "Grant execute permission for all scripts in .github/scripts"
+        run: chmod +x ${{ env.WORKING_DIRECTORY }}/.github/scripts/*
+        shell: bash
+
+      - name: "🚨 Run ${{ env.TEST_MODULE }} Tests 🚨"
+        run: ${{ env.WORKING_DIRECTORY }}/.github/scripts/determine_module.sh ${{ env.WORKING_DIRECTORY }} true
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_TEST_MODULE: ${{ env.TEST_MODULE }}
+          TEST_ENVIRONMENT: ${{ env.TEST_ENVIRONMENT }}
+          TEST_GROUP: ${{ env.TEST_GROUP }}
+          ENABLE_PKCE: ${{ env.ENABLE_PKCE }}
+          ENABLE_TEST_RETRY: ${{ env.ENABLE_TEST_RETRY }}
+          ENABLE_XRAY_REPORT: ${{ env.ENABLE_XRAY_REPORT }}
+          ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
+        shell: bash
+
+      - name: "Process TestNG results"
+        run: ${{ env.WORKING_DIRECTORY }}/.github/scripts/process_testng_results.sh ${{ env.WORKING_DIRECTORY }}
+        env:
+          TEST_MODULES: ${{ env.TEST_MODULES }}
+        shell: bash
+
+      - name: "Upload TestNG results artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ env.TEST_MODULE }}-testng-report"
+          path: "artifacts/"
+          retention-days: 5
+
+      - name: "Upload Allure Report results artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: "allure-results"
+          path: "test-repo/build/allure-results"
+          retention-days: 5
+
+  publish-github-report:
+    needs: build
+    runs-on: ubuntu-latest
+    name: "Generate GitHub Report 📊"
+    steps:
+      - name: "Create GitHub report"
+        uses: phoenix-actions/test-reporting@v15
+        if: success() || failure()
+        with:
+          name: "JUnit Report"
+          artifact: " ${{ inputs.testModule }}-testng-report"
+          output-to: "step-summary"
+          path: "junit-report/**/*.xml"
+          reporter: "java-junit"
+          fail-on-error: "false"
+          max-annotations: 0
+
+  publish-allure-report:
+    needs: build
+    runs-on: ubuntu-latest
+    name: "Generate Allure Report 📊"
+    steps:
+      - name: "Download Allure Report results artifact"
+        uses: actions/download-artifact@v4
+        with:
+          name: "allure-results"
+          path: "allure-results"
+
+      - name: "Load Allure Report history"
+        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: "Build Allure Report"
+        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
+        uses: simple-elf/allure-report-action@master
+        with:
+          gh_pages: gh-pages
+          allure_history: allure-history
+          allure_results: allure-results
+          keep_reports: 20
+
+      - name: "Publish Allure Report"
+        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          commit_message: "[TEST-🤖] Automated deployment of Allure Report | ${{ github.run_number }}"
+
+  cleanup:
+    needs: publish-allure-report
+    runs-on: ubuntu-latest
+    name: "Cleanup 🗑️"
+    permissions: write-all
+    steps:
+      - name: "Delete GitHub Pages deployments"
+        uses: strumwolf/delete-deployment-environment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: github-pages
+          onlyRemoveDeployments: true
