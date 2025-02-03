@@ -64,7 +64,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
         with:
-          repository: kamil-nowocin/workflowTests
+          repository: kamil-nowocin/test-repo
           path: "test-repo"
 
       - name: "Set working directory"
