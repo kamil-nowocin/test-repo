@@ -9,7 +9,7 @@
     "send-slack-notification": "node send-slack-notification.js"
   },
   "dependencies": {
-    "@octokit/rest": "^21.0.2",
+    "@octokit/rest": "^21.1.0",
     "axios": "^1.7.9"
   }
 }
