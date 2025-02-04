@@ -93,7 +93,7 @@ jobs:
       BUILD_NUMBER: ${{ github.run_number }}
       # Settings
       TEST_MODULE: ${{ github.event.inputs.testModule || github.event.client_payload.testModule }}
-      TEST_ENVIRONMENT: ${{ github.event_name == 'schedule' && 'UAT' || github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment }}
+      TEST_ENVIRONMENT: ${{ github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment }}
       TEST_GROUP: ${{ github.event_name == 'schedule' && 'ALL' || github.event.inputs.testGroup || github.event.client_payload.testGroup }}
       ENABLE_PKCE: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enablePKCE || github.event.client_payload.enablePKCE}}
       ENABLE_TEST_RETRY: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableTestRetry || github.event.client_payload.enableTestRetry }}
