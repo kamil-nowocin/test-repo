@@ -29,10 +29,10 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
     CURRENT_TIME=$((10#$(date -u +"%H%M")))
     echo "Current UTC time: $CURRENT_TIME"
     case $CURRENT_TIME in
-        200[0-9] | 201[0-9]) TEST_MODULE="Websters" TEST_ENVIRONMENT="PROD" ;;
-        203[0-9] | 204[0-9]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="PROD" ;;
-        210[0-9] | 211[0-9]) TEST_MODULE="Websters" TEST_ENVIRONMENT="UAT" ;;
-        213[0-9] | 214[0-9]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="UAT" ;;
+        180[0-9] | 182[0-5]) TEST_MODULE="Websters" TEST_ENVIRONMENT="PROD" ;;
+        183[0-9] | 185[0-5]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="PROD" ;;
+        190[0-9] | 192[0-5]) TEST_MODULE="Websters" TEST_ENVIRONMENT="UAT" ;;
+        193[0-9] | 195[0-5]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="UAT" ;;
         *) echo "❌ ERROR: No matching schedule found! Exiting..." && exit 1 ;;
     esac
 elif [[ "$TRIGGERED_FROM_DEV_REPO" == "true" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" || "$GITHUB_EVENT_NAME" == "repository_dispatch" ]]; then
@@ -58,6 +58,7 @@ fi
 if [[ -w "$GITHUB_ENV" ]]; then
     {
         echo "TEST_MODULES=${TEST_MODULES[*]}"
+        echo "TEST_MODULE=$TEST_MODULE"
     } >> "$GITHUB_ENV"
 else
     echo "⚠️ WARNING: Unable to write to GITHUB_ENV"

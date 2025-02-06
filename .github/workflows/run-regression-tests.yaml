@@ -8,10 +8,10 @@ run-name: "👷🚧[#${{ github.run_number }}][TEST] Executing tests${{ github.e
 
 on:
   schedule:
-    - cron: "00 20 * * 1-5" # PROD
-    - cron: "30 20 * * 1-5" # PROD
-    - cron: "00 21 * * 1-5" # UAT
-    - cron: "30 21 * * 1-5" # UAT
+    - cron: "00 18 * * 1-5" # Websters PROD
+    - cron: "30 18 * * 1-5" # Klasters PROD"
+    - cron: "00 19 * * 1-5" # Websters UAT
+    - cron: "30 19 * * 1-5" # Klasters UAT"
 
   # ==========================================
   # cURL Command to manually trigger this workflow
