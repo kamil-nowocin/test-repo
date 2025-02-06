@@ -147,6 +147,10 @@ jobs:
           ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
+      - name: "Set job outputs"
+        id: set_test_modules
+        run: echo "test_modules=${TEST_MODULES}" >> $GITHUB_OUTPUT
+
       - name: "Process TestNG results"
         run: ${{ github.workspace }}/.github/scripts/process_testng_results.sh ${{ github.workspace }}
         env:
@@ -171,13 +175,16 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
+    env:
+      TEST_MODULES: ${{ needs.build.outputs.test_modules }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           name: "JUnit Report"
-          artifact: "${{ github.event.inputs.testModule || github.event.client_payload.testModule }}-testng-report"
+#          artifact: "${{ github.event.inputs.testModule || github.event.client_payload.testModule }}-testng-report"
+          artifact: "${{ env.TEST_MODULE }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
           reporter: "java-junit"

@@ -102,6 +102,10 @@ jobs:
           ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
+      - name: "Set job outputs"
+        id: set_test_modules
+        run: echo "test_modules=${TEST_MODULES}" >> $GITHUB_OUTPUT
+
       - name: "Process TestNG results"
         run: ${{ env.WORKING_DIRECTORY }}/.github/scripts/process_testng_results.sh ${{ env.WORKING_DIRECTORY }}
         env:
@@ -126,6 +130,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
+    env:
+      TEST_MODULES: ${{ needs.build.outputs.test_modules }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
