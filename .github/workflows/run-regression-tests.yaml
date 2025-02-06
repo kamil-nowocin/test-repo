@@ -148,8 +148,8 @@ jobs:
         shell: bash
 
       - name: "Set job outputs"
-        id: set_test_modules
-        run: echo "test_modules=${TEST_MODULES}" >> $GITHUB_OUTPUT
+        id: set_test_module
+        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
 
       - name: "Process TestNG results"
         run: ${{ github.workspace }}/.github/scripts/process_testng_results.sh ${{ github.workspace }}
@@ -176,7 +176,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
-      TEST_MODULES: ${{ needs.build.outputs.test_modules }}
+      TEST_MODULE: ${{ needs.build.outputs.test_module }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
