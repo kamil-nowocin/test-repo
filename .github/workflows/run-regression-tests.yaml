@@ -147,10 +147,6 @@ jobs:
           ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
-      - name: "Set job outputs"
-        id: set_test_module
-        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
-
       - name: "Process TestNG results"
         run: ${{ github.workspace }}/.github/scripts/process_testng_results.sh ${{ github.workspace }}
         env:
@@ -170,6 +166,10 @@ jobs:
           name: "allure-results"
           path: "build/allure-results"
           retention-days: 5
+
+      - name: "Set job outputs"
+        id: set_test_module
+        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
 
   publish-github-report:
     needs: build
