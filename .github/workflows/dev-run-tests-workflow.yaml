@@ -26,7 +26,7 @@ on:
         type: string
       triggeredFromDevRepo:
         required: true
-        type: string
+        type: boolean
     secrets:
       XRAY_CLIENT_ID:
         required: true
