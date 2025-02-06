@@ -1,5 +1,9 @@
 name: TEST | PR Validation
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 run-name: "👷🚧[#${{ github.run_number }}][VALIDATION] Validating PR \"${{ github.event.pull_request.title }}\""
 
 on:
