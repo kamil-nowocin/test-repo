@@ -58,7 +58,7 @@ fi
 if [[ -w "$GITHUB_ENV" ]]; then
     {
         echo "TEST_MODULES=${TEST_MODULES[*]}"
-        echo "TEST_MODULE=$TEST_MODULE"
+#        echo "TEST_MODULE=$TEST_MODULE"
     } >> "$GITHUB_ENV"
 else
     echo "⚠️ WARNING: Unable to write to GITHUB_ENV"
