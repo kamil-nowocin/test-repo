@@ -45,6 +45,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
+    outputs:
+      test_module: ${{ steps.blablabla.outputs.test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -126,19 +128,24 @@ jobs:
           path: "test-repo/build/allure-results"
           retention-days: 5
 
+      - name: "Set job output for TEST_MODULE"
+        id: blablabla
+        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        shell: bash
+
   publish-github-report:
     needs: build
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
-      TEST_MODULES: ${{ needs.build.outputs.test_modules }}
+      TEST_MODULE: ${{ needs.build.outputs.test_module }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           name: "JUnit Report"
-          artifact: "${{ env.TEST_MODULES }}-testng-report"
+          artifact: "${{ env.TEST_MODULE }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
           reporter: "java-junit"
