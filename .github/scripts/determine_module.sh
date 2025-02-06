@@ -31,8 +31,8 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
     case $CURRENT_TIME in
         180[0-9] | 181[0-9] | 182[0-5]) TEST_MODULE="Websters" TEST_ENVIRONMENT="PROD" ;; # Trigger time between 18:00 - 18:25
         183[0-9] | 184[0-9] | 185[0-5]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="PROD" ;; # Trigger time between 18:30 - 18:55
-        190[0-9] | 191[0-5] | 192[0-5]) TEST_MODULE="Websters" TEST_ENVIRONMENT="UAT" ;; # Trigger time between 19:00 - 18:25
-        193[0-9] | 194[0-5] | 195[0-5]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="UAT" ;; # Trigger time between 19:30 - 18:55
+        190[0-9] | 191[0-5] | 192[0-5]) TEST_MODULE="Websters" TEST_ENVIRONMENT="UAT" ;;  # Trigger time between 19:00 - 18:25
+        193[0-9] | 194[0-5] | 195[0-5]) TEST_MODULE="Klasters" TEST_ENVIRONMENT="UAT" ;;  # Trigger time between 19:30 - 18:55
         *) echo "❌ ERROR: No matching schedule found! Exiting..." && exit 1 ;;
     esac
 elif [[ "$TRIGGERED_FROM_DEV_REPO" == "true" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" || "$GITHUB_EVENT_NAME" == "repository_dispatch" ]]; then
