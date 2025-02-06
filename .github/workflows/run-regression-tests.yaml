@@ -9,9 +9,9 @@ run-name: "👷🚧[#${{ github.run_number }}][TEST] Executing tests${{ github.e
 on:
   schedule:
     - cron: "00 18 * * 1-5" # Websters PROD
-    - cron: "30 18 * * 1-5" # Klasters PROD"
+    - cron: "30 18 * * 1-5" # Klasters PROD
     - cron: "00 19 * * 1-5" # Websters UAT
-    - cron: "30 19 * * 1-5" # Klasters UAT"
+    - cron: "30 19 * * 1-5" # Klasters UAT
 
   # ==========================================
   # cURL Command to manually trigger this workflow
@@ -88,6 +88,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
+    outputs:
+      test_module: ${{ steps.blablabla.outputs.test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -95,7 +97,7 @@ jobs:
       TEST_MODULE: ${{ github.event.inputs.testModule || github.event.client_payload.testModule }}
       TEST_ENVIRONMENT: ${{ github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment }}
       TEST_GROUP: ${{ github.event_name == 'schedule' && 'ALL' || github.event.inputs.testGroup || github.event.client_payload.testGroup }}
-      ENABLE_PKCE: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enablePKCE || github.event.client_payload.enablePKCE}}
+      ENABLE_PKCE: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enablePKCE || github.event.client_payload.enablePKCE }}
       ENABLE_TEST_RETRY: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableTestRetry || github.event.client_payload.enableTestRetry }}
       ENABLE_XRAY_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableXrayReport || github.event.client_payload.enableXrayReport }}
       ENABLE_SLACK_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableSlackReport || github.event.client_payload.enableSlackReport }}
@@ -167,29 +169,10 @@ jobs:
           path: "build/allure-results"
           retention-days: 5
 
-      - name: "Run tests and capture TEST_MODULE"
-        id: blablabla   # This ID can be any unique string
-        run: |
-          # Capture the output from the script
-          NEW_MODULE=$("${WORKING_DIRECTORY}/.github/scripts/determine_module.sh" "${WORKING_DIRECTORY}" true)
-          echo "DEBUG: Determined NEW_MODULE is '${NEW_MODULE}'"
-          
-          # Check that NEW_MODULE is not empty
-          if [ -z "$NEW_MODULE" ]; then
-            echo "Error: NEW_MODULE is empty" >&2
-            exit 1
-          fi
-          
-          # Update the job environment for subsequent steps
-          echo "TEST_MODULE=${NEW_MODULE}" >> "$GITHUB_ENV"
-          
-          # Set the job output so downstream jobs can access it
-          echo "test_module=${NEW_MODULE}" >> "$GITHUB_OUTPUT"
-        env:
-          WORKING_DIRECTORY: ${{ env.WORKING_DIRECTORY }}
-          # Add any other necessary environment variables here
+      - name: "Set job output for TEST_MODULE"
+        id: blablabla
+        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash
-
 
   publish-github-report:
     needs: build
@@ -203,7 +186,6 @@ jobs:
         if: success() || failure()
         with:
           name: "JUnit Report"
-#          artifact: "${{ github.event.inputs.testModule || github.event.client_payload.testModule }}-testng-report"
           artifact: "${{ env.TEST_MODULE }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
