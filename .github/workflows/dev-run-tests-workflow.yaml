@@ -132,7 +132,7 @@ jobs:
         if: success() || failure()
         with:
           name: "JUnit Report"
-          artifact: " ${{ env.TEST_MODULES }}-testng-report"
+          artifact: "${{ env.TEST_MODULES }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
           reporter: "java-junit"
