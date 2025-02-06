@@ -17,16 +17,16 @@ on:
         type: string
       enableTestRetry:
         required: true
-        type: boolean
+        type: string
       enableXrayReport:
         required: true
-        type: boolean
+        type: string
       enableSlackReport:
         required: true
-        type: boolean
+        type: string
       triggeredFromDevRepo:
         required: true
-        type: boolean
+        type: string
     secrets:
       XRAY_CLIENT_ID:
         required: true
