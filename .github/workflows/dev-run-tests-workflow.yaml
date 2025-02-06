@@ -14,16 +14,16 @@ on:
         type: string
       enablePKCE:
         required: true
-        type: string
+        type: boolean
       enableTestRetry:
         required: true
-        type: string
+        type: boolean
       enableXrayReport:
         required: true
-        type: string
+        type: boolean
       enableSlackReport:
         required: true
-        type: string
+        type: boolean
       triggeredFromDevRepo:
         required: true
         type: boolean
