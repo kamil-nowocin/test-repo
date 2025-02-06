@@ -167,9 +167,29 @@ jobs:
           path: "build/allure-results"
           retention-days: 5
 
-      - name: "Set job outputs"
-        id: set_test_module
-        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+      - name: "Run tests and capture TEST_MODULE"
+        id: blablabla   # This ID can be any unique string
+        run: |
+          # Capture the output from the script
+          NEW_MODULE=$("${WORKING_DIRECTORY}/.github/scripts/determine_module.sh" "${WORKING_DIRECTORY}" true)
+          echo "DEBUG: Determined NEW_MODULE is '${NEW_MODULE}'"
+          
+          # Check that NEW_MODULE is not empty
+          if [ -z "$NEW_MODULE" ]; then
+            echo "Error: NEW_MODULE is empty" >&2
+            exit 1
+          fi
+          
+          # Update the job environment for subsequent steps
+          echo "TEST_MODULE=${NEW_MODULE}" >> "$GITHUB_ENV"
+          
+          # Set the job output so downstream jobs can access it
+          echo "test_module=${NEW_MODULE}" >> "$GITHUB_OUTPUT"
+        env:
+          WORKING_DIRECTORY: ${{ env.WORKING_DIRECTORY }}
+          # Add any other necessary environment variables here
+        shell: bash
+
 
   publish-github-report:
     needs: build
