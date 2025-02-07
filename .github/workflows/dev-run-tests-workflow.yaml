@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      shared_test_module: ${{ steps.shared_env.outputs.test_module }}
+      shared_test_module: ${{ steps.shared_env.outputs.shared_test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}

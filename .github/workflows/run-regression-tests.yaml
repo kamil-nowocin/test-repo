@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      test_module: ${{ steps.blablabla.outputs.test_module }}
+      shared_test_module: ${{ steps.blablabla.outputs.shared_test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -171,7 +171,7 @@ jobs:
 
       - name: "Set job output for TEST_MODULE"
         id: blablabla
-        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash
 
   publish-github-report:
@@ -179,14 +179,14 @@ jobs:
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
-      TEST_MODULE: ${{ needs.build.outputs.test_module }}
+      SHARED_TEST_MODULE: ${{ needs.build.outputs.test_module }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           name: "JUnit Report"
-          artifact: "${{ env.TEST_MODULE }}-testng-report"
+          artifact: "${{ env.SHARED_TEST_MODULE }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
           reporter: "java-junit"
