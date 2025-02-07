@@ -58,8 +58,7 @@ jobs:
       ENABLE_TEST_RETRY: ${{ inputs.enableTestRetry }}
       ENABLE_XRAY_REPORT: ${{ inputs.enableXrayReport }}
       ENABLE_SLACK_REPORT: ${{ inputs.enableSlackReport }}
-      # Settings - Set by 'determine_module.sh'
-      TEST_MODULES: ""
+      TEST_MODULES: "" # Set by 'determine_module.sh'
       # Secrets
       XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
       XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
@@ -124,7 +123,7 @@ jobs:
           path: "test-repo/build/allure-results"
           retention-days: 5
 
-      - name: "Set job output for TEST_MODULE"
+      - name: "Set job outputs"
         id: shared_env
         run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash

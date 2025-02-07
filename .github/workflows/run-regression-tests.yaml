@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      shared_test_module: ${{ steps.blablabla.outputs.shared_test_module }}
+      shared_test_module: ${{ steps.shared_env.outputs.shared_test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -101,8 +101,7 @@ jobs:
       ENABLE_TEST_RETRY: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableTestRetry || github.event.client_payload.enableTestRetry }}
       ENABLE_XRAY_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableXrayReport || github.event.client_payload.enableXrayReport }}
       ENABLE_SLACK_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableSlackReport || github.event.client_payload.enableSlackReport }}
-      # Settings - Set by 'determine_module.sh'
-      TEST_MODULES: ""
+      TEST_MODULES: "" # Set by 'determine_module.sh'
       # Secrets
       XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
       XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
@@ -169,8 +168,8 @@ jobs:
           path: "build/allure-results"
           retention-days: 5
 
-      - name: "Set job output for TEST_MODULE"
-        id: blablabla
+      - name: "Set job outputs"
+        id: shared_env
         run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash
 
