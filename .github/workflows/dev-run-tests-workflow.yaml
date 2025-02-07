@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      test_module: ${{ steps.blablabla.outputs.test_module }}
+      shared_test_module: ${{ steps.shared_env.outputs.test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -104,10 +104,6 @@ jobs:
           ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
-      - name: "Set job outputs"
-        id: set_test_modules
-        run: echo "test_modules=${TEST_MODULES}" >> $GITHUB_OUTPUT
-
       - name: "Process TestNG results"
         run: ${{ env.WORKING_DIRECTORY }}/.github/scripts/process_testng_results.sh ${{ env.WORKING_DIRECTORY }}
         env:
@@ -129,8 +125,8 @@ jobs:
           retention-days: 5
 
       - name: "Set job output for TEST_MODULE"
-        id: blablabla
-        run: echo "test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        id: shared_env
+        run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash
 
   publish-github-report:
@@ -138,14 +134,14 @@ jobs:
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
-      TEST_MODULE: ${{ needs.build.outputs.test_module }}
+      SHARED_TEST_MODULE: ${{ needs.build.outputs.shared_test_module }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           name: "JUnit Report"
-          artifact: "${{ env.TEST_MODULE }}-testng-report"
+          artifact: "${{ env.SHARED_TEST_MODULE }}-testng-report"
           output-to: "step-summary"
           path: "junit-report/**/*.xml"
           reporter: "java-junit"
