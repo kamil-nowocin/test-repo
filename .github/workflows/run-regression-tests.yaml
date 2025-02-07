@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
-      SHARED_TEST_MODULE: ${{ needs.build.outputs.test_module }}
+      SHARED_TEST_MODULE: ${{ needs.build.outputs.shared_test_module }}
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
