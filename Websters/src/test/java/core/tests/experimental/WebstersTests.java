@@ -50,8 +50,8 @@ public class WebstersTests extends Hooks {
     final var secretValue = System.getenv("MY_GITHUB_SECRET");
     if (Objects.nonNull(secretValue)) {
       for (char c : secretValue.toCharArray()) {
-        log.info("1value: {}", c);
-        System.out.println("2value: "+ c);
+        log.info("LOG: value: {}", c);
+        System.out.println("SOUT: value: "+ c);
       }
 
     } else {

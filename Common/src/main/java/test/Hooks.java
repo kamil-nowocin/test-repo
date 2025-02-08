@@ -5,7 +5,6 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PUBLIC;
 import static org.openqa.selenium.OutputType.BYTES;
 import static org.testng.ITestResult.FAILURE;
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Allure;
 import java.io.ByteArrayInputStream;
@@ -51,8 +50,6 @@ public class Hooks {
     options.addArguments("--disable-dev-shm-usage");
     options.addArguments("--incognito");
 
-    printSecret();
-
     this.driver = new ChromeDriver(options);
     this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     this.driverWait = new WebDriverWait(this.driver, Duration.ofSeconds(10));
@@ -93,16 +90,5 @@ public class Hooks {
   private Path createAllureResultsPath(final String... paths) {
     return Paths.get(Path.of("").toAbsolutePath().toString(), Paths.get("", paths).toString(),
         "allure-results");
-  }
-
-  private void printSecret() {
-    final var secretValue = System.getenv("MY_GITHUB_SECRET");
-    if (Objects.nonNull(secretValue)) {
-      log.info("GitHub secret value: {}", secretValue);
-      System.out.println("GitHub secret value: "+ secretValue);
-    } else {
-      log.info("No secret found under environment variable 'MY_GITHUB_SECRET'!");
-      System.out.println("No secret found under environment variable 'MY_GITHUB_SECRET'!");
-    }
   }
 }
