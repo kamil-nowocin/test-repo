@@ -4,7 +4,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
-run-name: "👷🚧[#${{ github.run_number }}][TEST] ${{ github.event_name == 'schedule' ? 'Executing scheduled tests' : 'Executing tests of ' + (github.event.inputs.testModule || github.event.client_payload.testModule) + ' on ' + (github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment) + '🌍' }}"
+run-name: ${{ format('👷🚧[#{}][TEST] Executing {}', github.run_number, github.event_name == 'schedule' && 'scheduled tests' || format('tests of {} on {}🌍', github.event.inputs.testModule || github.event.client_payload.testModule, github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment)) }}
 
 on:
   schedule:
