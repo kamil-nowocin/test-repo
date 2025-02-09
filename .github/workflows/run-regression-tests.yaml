@@ -5,7 +5,13 @@ concurrency:
   cancel-in-progress: false
 
 #run-name: ${{ format('👷🚧[#{0}][TEST] Executing {1}', github.run_number, github.event_name == 'schedule' && 'scheduled tests' || format('tests of {0} on {1}🌍', github.event.inputs.testModule || github.event.client_payload.testModule, github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment)) }}
-run-name: ${{ format('👷🚧[#{0}][TEST] Executing {1} at {2}', github.run_number, github.event_name == 'schedule' && 'scheduled tests' || format('tests of {0} on {1}🌍', github.event.inputs.testModule || github.event.client_payload.testModule, github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment), github.run_started_at[11:16]) }}
+run-name: ${{ format('👷🚧[#{0}][TEST] Executing {1} at {2}', 
+  github.run_number, 
+  github.event_name == 'schedule' && 'scheduled tests' || format('tests of {0} on {1}🌍', 
+    github.event.inputs.testModule || github.event.client_payload.testModule, 
+    github.event.inputs.testEnvironment || github.event.client_payload.testEnvironment), 
+  substring(github.run_started_at, 11, 5)
+) }}
 
 on:
   schedule:
