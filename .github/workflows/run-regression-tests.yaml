@@ -139,7 +139,6 @@ jobs:
         run: ${{ github.workspace }}/.github/scripts/determine_module.sh ${{ github.workspace }} false
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-#          GITHUB_EVENT_TEST_MODULE: ${{ env.TEST_MODULE }}
         shell: bash
 
       - name: "Process TestNG results"

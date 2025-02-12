@@ -14,12 +14,12 @@ test {
     }
 
     testLogging {
+        events = ['PASSED', 'SKIPPED', 'FAILED']
+        exceptionFormat = 'FULL'
         showStandardStreams = true
         showStackTraces = true
         showCauses = true
         showExceptions = true
-        exceptionFormat = 'FULL'
-        events = ['PASSED', 'SKIPPED', 'FAILED']
-//        testLogging.showStandardStreams = true
+        testLogging.showStandardStreams = true
     }
 }
