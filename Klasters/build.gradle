@@ -20,6 +20,5 @@ test {
         showStackTraces = true
         showCauses = true
         showExceptions = true
-//        testLogging.showStandardStreams = true
     }
 }
