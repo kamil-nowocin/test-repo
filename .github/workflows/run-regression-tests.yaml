@@ -8,7 +8,6 @@ run-name: ${{ format('👷🚧[#{0}][TEST] Executing {1}', github.run_number, gi
 
 on:
   schedule:
-    - cron: "50 17 * * 1-5"
     - cron: "00 18 * * 1-5" # Websters PROD
     - cron: "30 18 * * 1-5" # Klasters PROD
     - cron: "00 19 * * 1-5" # Websters UAT
@@ -102,11 +101,6 @@ jobs:
       ENABLE_TEST_RETRY: ${{ github.event.inputs.enableTestRetry || github.event.client_payload.enableTestRetry }}
       ENABLE_XRAY_REPORT: ${{ github.event.inputs.enableXrayReport || github.event.client_payload.enableXrayReport }}
       ENABLE_SLACK_REPORT: ${{ github.event.inputs.enableSlackReport || github.event.client_payload.enableSlackReport }}
-      #      TEST_GROUP: ${{ github.event_name == 'schedule' && 'ALL' || github.event.inputs.testGroup || github.event.client_payload.testGroup }}
-      #      ENABLE_PKCE: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enablePKCE || github.event.client_payload.enablePKCE }}
-      #      ENABLE_TEST_RETRY: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableTestRetry || github.event.client_payload.enableTestRetry }}
-      #      ENABLE_XRAY_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableXrayReport || github.event.client_payload.enableXrayReport }}
-      #      ENABLE_SLACK_REPORT: ${{ github.event_name == 'schedule' && 'false' || github.event.inputs.enableSlackReport || github.event.client_payload.enableSlackReport }}
       TEST_MODULES: "" # Set by 'determine_module.sh'
       # Secrets
       XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
@@ -146,12 +140,12 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_TEST_MODULE: ${{ env.TEST_MODULE }}
-          TEST_ENVIRONMENT: ${{ env.TEST_ENVIRONMENT }}
-          TEST_GROUP: ${{ env.TEST_GROUP }}
-          ENABLE_PKCE: ${{ env.ENABLE_PKCE }}
-          ENABLE_TEST_RETRY: ${{ env.ENABLE_TEST_RETRY }}
-          ENABLE_XRAY_REPORT: ${{ env.ENABLE_XRAY_REPORT }}
-          ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
+#          TEST_ENVIRONMENT: ${{ env.TEST_ENVIRONMENT }}
+#          TEST_GROUP: ${{ env.TEST_GROUP }}
+#          ENABLE_PKCE: ${{ env.ENABLE_PKCE }}
+#          ENABLE_TEST_RETRY: ${{ env.ENABLE_TEST_RETRY }}
+#          ENABLE_XRAY_REPORT: ${{ env.ENABLE_XRAY_REPORT }}
+#          ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
       - name: "Process TestNG results"

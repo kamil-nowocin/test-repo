@@ -33,16 +33,6 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
     CURRENT_TIME=$((10#$(date -u +"%H%M")))
     echo "Current UTC time: $CURRENT_TIME"
     case $CURRENT_TIME in
-        175[0-9])
-            TEST_MODULE="Websters"
-            TEST_ENVIRONMENT="PROD"
-            TEST_GROUP="ALL"
-            ENABLE_PKCE="false"
-            ENABLE_TEST_RETRY="false"
-            ENABLE_XRAY_REPORT="false"
-            ENABLE_SLACK_REPORT="false"
-            ;;
-          #######################
         180[0-9] | 181[0-9] | 182[0-5])
             TEST_MODULE="Websters"
             TEST_ENVIRONMENT="PROD"
@@ -118,7 +108,7 @@ fi
 if [[ -w "$GITHUB_ENV" ]]; then
     {
         echo "TEST_MODULES=${TEST_MODULES[*]}"
-        echo "TEST_MODULE=${TEST_MODULE}"
+        #echo "TEST_MODULE=${TEST_MODULE}"
     } >> "$GITHUB_ENV"
 else
     echo "⚠️ WARNING: Unable to write to GITHUB_ENV"

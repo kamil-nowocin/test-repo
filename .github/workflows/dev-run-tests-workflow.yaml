@@ -97,12 +97,12 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_TEST_MODULE: ${{ env.TEST_MODULE }}
-          TEST_ENVIRONMENT: ${{ env.TEST_ENVIRONMENT }}
-          TEST_GROUP: ${{ env.TEST_GROUP }}
-          ENABLE_PKCE: ${{ env.ENABLE_PKCE }}
-          ENABLE_TEST_RETRY: ${{ env.ENABLE_TEST_RETRY }}
-          ENABLE_XRAY_REPORT: ${{ env.ENABLE_XRAY_REPORT }}
-          ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
+#          TEST_ENVIRONMENT: ${{ env.TEST_ENVIRONMENT }}
+#          TEST_GROUP: ${{ env.TEST_GROUP }}
+#          ENABLE_PKCE: ${{ env.ENABLE_PKCE }}
+#          ENABLE_TEST_RETRY: ${{ env.ENABLE_TEST_RETRY }}
+#          ENABLE_XRAY_REPORT: ${{ env.ENABLE_XRAY_REPORT }}
+#          ENABLE_SLACK_REPORT: ${{ env.ENABLE_SLACK_REPORT }}
         shell: bash
 
       - name: "Process TestNG results"
