@@ -20,6 +20,6 @@ test {
         showExceptions = true
         exceptionFormat = 'FULL'
         events = ['PASSED', 'SKIPPED', 'FAILED']
-        testLogging.showStandardStreams = true
+//        testLogging.showStandardStreams = true
     }
 }

@@ -10,7 +10,6 @@ test {
         ignoreFailures = true
         systemProperties = System.getProperties() as Map<String, ?>
 
-
         suites '/src/test/resources/xml/DefaultRunner.xml'
     }
 
@@ -21,6 +20,6 @@ test {
         showExceptions = true
         exceptionFormat = 'FULL'
         events = ['PASSED', 'SKIPPED', 'FAILED']
-        testLogging.showStandardStreams = true
+//        testLogging.showStandardStreams = true
     }
 }

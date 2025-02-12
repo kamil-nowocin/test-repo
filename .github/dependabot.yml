@@ -5,6 +5,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+      time: '07:30'
     open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] Gradle Dependencies update'
@@ -15,6 +16,7 @@ updates:
     directory: '.github/scripts/'
     schedule:
       interval: 'daily'
+      time: '07:30'
     open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] NPM Dependencies update'
@@ -25,6 +27,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+      time: '07:30'
     open-pull-requests-limit: 5
     commit-message:
       prefix: '[TEST-🤖] GitHub Actions update'

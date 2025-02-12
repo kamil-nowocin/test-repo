@@ -76,7 +76,10 @@ if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
     esac
 
 elif [[ "$TRIGGERED_FROM_DEV_REPO" == "true" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" || "$GITHUB_EVENT_NAME" == "repository_dispatch" ]]; then
-    TEST_MODULE="${GITHUB_EVENT_TEST_MODULE}"
+    if [[ -z "$TEST_MODULE" ]]; then
+        echo "❌ ERROR: TEST_MODULE isn't provided in environment! Exiting..."
+        exit 1
+    fi
     TEST_ENVIRONMENT="${TEST_ENVIRONMENT:-"PROD"}"
     TEST_GROUP="${TEST_GROUP:-"REGRESSION"}"
     ENABLE_PKCE="${ENABLE_PKCE:-"false"}"
@@ -111,7 +114,7 @@ if [[ -w "$GITHUB_ENV" ]]; then
         #echo "TEST_MODULE=${TEST_MODULE}"
     } >> "$GITHUB_ENV"
 else
-    echo "⚠️ WARNING: Unable to write to GITHUB_ENV"
+    echo "⚠️ WARNING: Unable to write to GITHUB_ENV!"
 fi
 
 ###############################################################################
