@@ -189,6 +189,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: "Generate Allure Report 📊"
+    environment:
+      name: github-pages
+      url: "https://kamil-nowocin.github.io/test-repo/${{ github.run_number }}/"
     steps:
       - name: "Download Allure Report results artifact"
         uses: actions/download-artifact@v4
@@ -227,9 +230,6 @@ jobs:
     runs-on: ubuntu-latest
     name: "Cleanup 🗑️"
     permissions: write-all
-    environment:
-      name: production         # any environment name you like
-      url: https://example.com # the link you want shown
     steps:
       - name: "Delete GitHub Pages deployments"
         uses: strumwolf/delete-deployment-environment@v3
@@ -237,9 +237,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: github-pages
           onlyRemoveDeployments: true
-
-      - name: Add a link to the summary
-        run: |
-          echo "https://example.com/my-bundle.zip" >> GITHUB_OUTPUT
-
-
