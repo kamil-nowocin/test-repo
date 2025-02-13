@@ -235,11 +235,8 @@ jobs:
           environment: github-pages
           onlyRemoveDeployments: true
 
-      - name: Show an example mp4 in job summary
+      - name: Add a link to the summary
         run: |
-          echo '## Example MP4
-          <video width="640" height="360" controls>
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>' >> $GITHUB_STEP_SUMMARY
+          echo "https://example.com/my-bundle.zip" >> GITHUB_OUTPUT
+
 
