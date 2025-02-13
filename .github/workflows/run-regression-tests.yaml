@@ -190,7 +190,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Generate Allure Report 📊"
     environment:
-      name: custom
+      name: github-pages
       url: "https://kamil-nowocin.github.io/test-repo/${{ github.run_number }}/"
     steps:
       - name: "Download Allure Report results artifact"
