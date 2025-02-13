@@ -234,33 +234,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: github-pages
           onlyRemoveDeployments: true
-
-      - name: "Prepend time in run name"
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // 1) Identify this run
-            const runId = process.env.GITHUB_RUN_ID;
-            // 2) Get the original run name
-            const run = await github.rest.actions.getWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: runId,
-            });
-            const originalName = run.data.name;
-
-            // 3) Build a [HH:MM] local time string
-            const now = new Date();
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const timeString = `[${hh}:${mm}]`;
-            // 4) Rename by prepending the time
-            const newName = `${timeString} ${originalName}`;
-            // 5) Update the run name using the "request" method
-            await github.request("PATCH /repos/{owner}/{repo}/actions/runs/{run_id}", {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: runId,
-              name: newName
-            });
