@@ -1,6 +1,8 @@
 name: TEST | Regression Testing
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
