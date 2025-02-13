@@ -23,7 +23,7 @@ jobs:
           script: |
             const currentTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             const runName = `👷🚧[#${process.env.GITHUB_RUN_NUMBER}][TEST] Executing ${context.eventName === 'schedule' ? 'scheduled tests' : `tests of ${context.payload.inputs?.testModule || context.payload.client_payload?.testModule} on ${context.payload.inputs?.testEnvironment || context.payload.client_payload?.testEnvironment}🌍`} at ${currentTime}`;
-            github.rest.actions.updateWorkflowRun({
+            github.rest.actions.runs.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: context.runId,
