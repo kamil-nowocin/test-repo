@@ -227,6 +227,9 @@ jobs:
     runs-on: ubuntu-latest
     name: "Cleanup 🗑️"
     permissions: write-all
+    environment:
+      name: production         # any environment name you like
+      url: https://example.com # the link you want shown
     steps:
       - name: "Delete GitHub Pages deployments"
         uses: strumwolf/delete-deployment-environment@v3
