@@ -66,7 +66,7 @@ jobs:
       - name: "Upload TestNG results artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: "testng-report"
+          name: "${{ env.TEST_MODULE }}-testng-report"
           path: "artifacts/"
           retention-days: 5
 
