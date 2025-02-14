@@ -4,10 +4,10 @@ set -e
 # 1. Make sure we have the latest 'main' branch so we can compare.
 git fetch origin main
 
-# 2. Get the list of changed files relative to 'main'.
-CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+# 2. Get the list of changed files relative to 'main' as an array.
+mapfile -t CHANGED_FILES < <(git diff --name-only origin/main...HEAD)
 echo "Changed files:"
-echo "$CHANGED_FILES"
+printf '%s\n' "${CHANGED_FILES[@]}"
 echo
 
 # 3. Define modules (no hardcoded test class names)
@@ -19,7 +19,7 @@ run_impacted_tests_for_module() {
   local -a gradle_test_args=()
 
   # Find all changed test files in this module
-  for file in $CHANGED_FILES; do
+  for file in "${CHANGED_FILES[@]}"; do
     if [[ "$file" == "${module_dir}/src/test/java/core/tests/"*".java" ]]; then
       # Convert file path to fully qualified test class name
       test_class=$(echo "$file" | sed -E "s|${module_dir}/src/test/java/||" | sed 's|/|.|g' | sed 's|.java||')
@@ -35,7 +35,16 @@ run_impacted_tests_for_module() {
     done
     echo
 
-    # Run one Gradle command with multiple "--tests" arguments
+    # Build and display the Gradle command to be executed
+    gradle_cmd="./gradlew ${module_dir}:test"
+    for arg in "${gradle_test_args[@]}"; do
+      gradle_cmd+=" $arg"
+    done
+    echo "Executing Gradle command:"
+    echo "$gradle_cmd"
+    echo
+
+    # Execute the Gradle command
     ./gradlew "${module_dir}:test" "${gradle_test_args[@]}"
     echo
   else
