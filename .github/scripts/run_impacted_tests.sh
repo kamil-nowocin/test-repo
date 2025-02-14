@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Global array to track modules with impacted tests.
+IMPACTED_MODULES=()
+
 # 1. Make sure we have the latest 'main' branch so we can compare.
 git fetch origin main
 
@@ -35,6 +38,9 @@ run_impacted_tests_for_module() {
     done
     echo
 
+    # Mark this module as impacted.
+    IMPACTED_MODULES+=("$module_dir")
+
     # Build and display the Gradle command to be executed
     gradle_cmd="./gradlew ${module_dir}:test"
     for arg in "${gradle_test_args[@]}"; do
@@ -57,3 +63,15 @@ run_impacted_tests_for_module() {
 for module in "${MODULES[@]}"; do
   run_impacted_tests_for_module "$module"
 done
+
+# 6. Write the impacted modules to GITHUB_ENV for later steps.
+#    If multiple modules are impacted, they are space-delimited.
+if [[ -w "$GITHUB_ENV" ]]; then
+    {
+        echo "TEST_MODULES=${IMPACTED_MODULES[*]}"
+        # Here, TEST_MODULE is set to the first impacted module (if any)
+        echo "TEST_MODULE=${IMPACTED_MODULES[0]:-}"
+    } >> "$GITHUB_ENV"
+else
+    echo "⚠️ WARNING: Unable to write to GITHUB_ENV!"
+fi
