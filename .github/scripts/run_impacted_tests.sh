@@ -11,7 +11,7 @@ echo "$CHANGED_FILES"
 echo
 
 # 3. Define modules (no hardcoded test class names)
-MODULES=("WFE_service-okta-auth" "WFE_service-mastercard")
+MODULES=("Websters" "Klasters")
 
 # 4. Function to detect and run impacted tests dynamically
 run_impacted_tests_for_module() {
