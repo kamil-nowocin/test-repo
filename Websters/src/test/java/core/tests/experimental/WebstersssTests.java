@@ -37,7 +37,7 @@ public class WebstersssTests extends Hooks {
   @Test(testName = "Test that should pass - Websters", description = "Test that should pass - Websters")
   public void testThatShouldPass() {
     printSecret();
-    log.info("Passed on purpose");
+    log.info("Passed on purpose123");
   }
 
   @AfterSuite
