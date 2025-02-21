@@ -16,7 +16,6 @@ jobs:
   clear-github-caches:
     runs-on: ubuntu-latest
     name: "Clear GitHub Actions caches 🗑️"
-
     steps:
       - name: "Install GitHub CLI"
         run: |

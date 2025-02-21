@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      shared_test_module: ${{ steps.shared_env.outputs.shared_test_module }}
+      shared_test_module: ${{ steps.set_output.outputs.shared_test_module }}
+      impacted_found: ${{ steps.set_output.outputs.impacted_found }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -26,7 +27,6 @@ jobs:
       XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       MY_GITHUB_SECRET: ${{ secrets.MY_GITHUB_SECRET }}
-
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -61,10 +61,12 @@ jobs:
         shell: bash
 
       - name: "Process TestNG results"
+        if: env.IMPACTED_FOUND == 'true'
         run: ${{ github.workspace }}/.github/scripts/process_testng_results.sh ${{ github.workspace }}
         shell: bash
 
       - name: "Upload TestNG results artifact"
+        if: env.IMPACTED_FOUND == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: "${{ env.TEST_MODULE }}-testng-report"
@@ -72,12 +74,15 @@ jobs:
           retention-days: 5
 
       - name: "Set job outputs"
-        id: shared_env
-        run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        id: set_output
+        run: |
+          echo "::set-output name=shared_test_module::${TEST_MODULE}"
+          echo "::set-output name=impacted_found::${IMPACTED_FOUND}"
         shell: bash
 
   publish-github-report:
     needs: build
+    if: ${{ needs.run-tests.outputs.shared_test_module != '' && needs.run-tests.outputs.impacted_found == 'true' }}
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
