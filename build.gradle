@@ -25,7 +25,7 @@ allprojects {
     dependencies {
         // MAIN LIBRARIES
         // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-        implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.28.1'
+        implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.29.0'
         // https://mvnrepository.com/artifact/org.testng/testng
         implementation group: 'org.testng', name: 'testng', version: '7.11.0'
         // https://mvnrepository.com/artifact/org.assertj/assertj-core
