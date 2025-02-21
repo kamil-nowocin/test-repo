@@ -8,6 +8,7 @@ run-name: "👷🚧[#${{ github.run_number }}][BUILD] Compiling project \"${{ gi
 
 on:
   pull_request:
+    types: [ opened, ready_for_review, reopened, edited, synchronize ]
     branches:
       - main
   push:
@@ -75,7 +76,7 @@ jobs:
           fi
 
       - name: "Apply labels on PR"
-        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always()
+        if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
         with:
           script: |
@@ -83,7 +84,7 @@ jobs:
             await manageLabels(github, context);
 
       - name: "Post build result"
-        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always()
+        if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
         with:
           script: |
@@ -114,7 +115,7 @@ jobs:
             You can check the [TEST | Project Compilation #{run_number}]({run_url}) logs for more information.
 
       - name: "Send Slack notification"
-        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && always() && env.build_result == 'failure'
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]' && always() && env.build_result == 'failure'
         run: npm run send-slack-notification ${{ env.build_result }} "${{ github.event.pull_request.title }}" ${{ github.event.pull_request.user.login }} ${{ github.repository }} ${{ github.run_id }} ${{ github.event.pull_request.number }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

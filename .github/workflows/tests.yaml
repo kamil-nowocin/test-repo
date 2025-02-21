@@ -6,12 +6,13 @@ concurrency:
 
 on:
   pull_request:
+    types: [ opened, ready_for_review, reopened, edited, synchronize ]
     branches:
       - main
 
 jobs:
   build:
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
@@ -82,7 +83,7 @@ jobs:
 
   publish-github-report:
     needs: build
-    if: ${{ needs.run-tests.outputs.shared_test_module != '' && needs.run-tests.outputs.impacted_found == 'true' }}
+    if: ${{ needs.build.outputs.shared_test_module != '' && needs.build.outputs.impacted_found == 'true' }}
     runs-on: ubuntu-latest
     name: "Generate GitHub Report 📊"
     env:
