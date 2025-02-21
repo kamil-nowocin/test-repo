@@ -64,14 +64,15 @@ for module in "${MODULES[@]}"; do
   run_impacted_tests_for_module "$module"
 done
 
-# 6. Write the impacted modules to GITHUB_ENV for later steps.
-#    If multiple modules are impacted, they are space-delimited.
+# 6. Write the impacted modules and a boolean flag to GITHUB_ENV for later steps.
 if [[ -w "$GITHUB_ENV" ]]; then
-    {
-        echo "TEST_MODULES=${IMPACTED_MODULES[*]}"
-        # Here, TEST_MODULE is set to the first impacted module (if any)
-        echo "TEST_MODULE=${IMPACTED_MODULES[0]:-}"
-    } >> "$GITHUB_ENV"
+    echo "TEST_MODULES=${IMPACTED_MODULES[*]}" >> "$GITHUB_ENV"
+    echo "TEST_MODULE=${IMPACTED_MODULES[0]:-}" >> "$GITHUB_ENV"
+    if [ ${#IMPACTED_MODULES[@]} -gt 0 ]; then
+      echo "IMPACTED_FOUND=true" >> "$GITHUB_ENV"
+    else
+      echo "IMPACTED_FOUND=false" >> "$GITHUB_ENV"
+    fi
 else
     echo "⚠️ WARNING: Unable to write to GITHUB_ENV!"
 fi
