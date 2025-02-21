@@ -107,7 +107,6 @@ jobs:
       XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       MY_GITHUB_SECRET: ${{ secrets.MY_GITHUB_SECRET }}
-
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -189,6 +188,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     name: "Generate Allure Report 📊"
+    environment:
+      name: custom
+      url: "https://kamil-nowocin.github.io/test-repo/${{ github.run_number }}/"
     steps:
       - name: "Download Allure Report results artifact"
         uses: actions/download-artifact@v4

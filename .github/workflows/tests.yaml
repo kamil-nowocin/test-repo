@@ -1,0 +1,95 @@
+name: TEST | PR Testing
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    name: "Build & Execute Tests 🛠️"
+    outputs:
+      shared_test_module: ${{ steps.shared_env.outputs.shared_test_module }}
+    env:
+      # Common
+      BUILD_NUMBER: ${{ github.run_number }}
+      TEST_MODULE: ""
+      TEST_MODULES: "" # Set by 'determine_module.sh'
+      # Secrets
+      XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+      XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      MY_GITHUB_SECRET: ${{ secrets.MY_GITHUB_SECRET }}
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Set up Java"
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: "Cache Gradle packages"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: "Grant execute permission for gradlew"
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: "Grant execute permission for all scripts in .github/scripts"
+        run: chmod +x ${{ github.workspace }}/.github/scripts/*
+        shell: bash
+
+      - name: "Run Impacted Tests"
+        run: ${{ github.workspace }}/.github/scripts/run_impacted_tests.sh
+        shell: bash
+
+      - name: "Process TestNG results"
+        run: ${{ github.workspace }}/.github/scripts/process_testng_results.sh ${{ github.workspace }}
+        shell: bash
+
+      - name: "Upload TestNG results artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ env.TEST_MODULE }}-testng-report"
+          path: "artifacts/"
+          retention-days: 5
+
+      - name: "Set job outputs"
+        id: shared_env
+        run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        shell: bash
+
+  publish-github-report:
+    needs: build
+    runs-on: ubuntu-latest
+    name: "Generate GitHub Report 📊"
+    env:
+      SHARED_TEST_MODULE: ${{ needs.build.outputs.shared_test_module }}
+    steps:
+      - name: "Create GitHub report"
+        uses: phoenix-actions/test-reporting@v15
+        if: success() || failure()
+        with:
+          name: "JUnit Report"
+          artifact: "${{ env.SHARED_TEST_MODULE }}-testng-report"
+          output-to: "step-summary"
+          path: "junit-report/**/*.xml"
+          reporter: "java-junit"
+          fail-on-error: "false"
+          max-annotations: 0

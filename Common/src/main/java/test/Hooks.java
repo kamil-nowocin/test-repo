@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PUBLIC;
 import static org.openqa.selenium.OutputType.BYTES;
 import static org.testng.ITestResult.FAILURE;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Allure;
 import java.io.ByteArrayInputStream;

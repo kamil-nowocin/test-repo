@@ -5,7 +5,13 @@
   thread-count="1"
   group-by-instances="true">
 
-  <test enabled="true" name="EXPERIMENTAL WEBSTER">
+  <test enabled="true" name="EXPERIMENTAL WebstersssTests">
+    <classes>
+      <class name="core.tests.experimental.WebstersssTests"/>
+    </classes>
+  </test>
+
+  <test enabled="true" name="EXPERIMENTAL WebstersTests">
     <classes>
       <class name="core.tests.experimental.WebstersTests"/>
     </classes>
