@@ -27,13 +27,13 @@ allprojects {
         // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
         implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.28.1'
         // https://mvnrepository.com/artifact/org.testng/testng
-        implementation group: 'org.testng', name: 'testng', version: '7.10.2'
+        implementation group: 'org.testng', name: 'testng', version: '7.11.0'
         // https://mvnrepository.com/artifact/org.assertj/assertj-core
         implementation group: 'org.assertj', name: 'assertj-core', version: '3.27.3'
 
         // SUPPORT LIBRARIES
         // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
-        implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
+        implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.3'
         // https://mvnrepository.com/artifact/org.projectlombok/lombok
         implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
 

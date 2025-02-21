@@ -8,6 +8,7 @@ run-name: "👷🚧[#${{ github.run_number }}][BUILD] Compiling project \"${{ gi
 
 on:
   pull_request:
+    types: [ opened, ready_for_review, reopened, edited, synchronize ]
     branches:
       - main
   push:
