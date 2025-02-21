@@ -12,11 +12,7 @@ on:
 
 jobs:
   assign-pr:
-    if: >
-      (github.event.action == 'opened' ||
-       github.event.action == 'reopened' ||
-       github.event.action == 'ready_for_review') &&
-      github.event.pull_request.draft == false
+    if: (github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'ready_for_review') && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: "Assign PR 🔖"
     steps:
@@ -24,11 +20,7 @@ jobs:
         uses: kentaro-m/auto-assign-action@v2.0.0
 
   validate-pr:
-    if: >
-      (github.event.action == 'opened' ||
-       github.event.action == 'reopened' ||
-       github.event.action == 'ready_for_review') &&
-      github.event.pull_request.draft == false
+    if: (github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'ready_for_review') && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: "Validate PR 🛠️"
     steps:

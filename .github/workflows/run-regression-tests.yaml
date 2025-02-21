@@ -107,7 +107,6 @@ jobs:
       XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       MY_GITHUB_SECRET: ${{ secrets.MY_GITHUB_SECRET }}
-
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
