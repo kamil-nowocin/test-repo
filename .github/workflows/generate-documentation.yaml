@@ -34,9 +34,11 @@ jobs:
 
       - name: "Grant execute permission for gradlew"
         run: chmod +x ./gradlew
+        shell: bash
 
       - name: "🚨 Generate Java Documentation 🚨"
         run: ./gradlew testJavadoc
+        shell: bash
 
       - name: "Upload Java Documentation artifact"
         uses: actions/upload-artifact@v4
