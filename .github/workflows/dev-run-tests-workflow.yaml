@@ -120,7 +120,7 @@ jobs:
       - name: "Set job outputs"
         id: set_output
         run: |
-          echo "::set-output name=shared_test_module::${TEST_MODULE}"
+          echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
         shell: bash
 
   publish-github-report:
