@@ -15,8 +15,7 @@ async function postGithubComment(
   switch (task) {
     case "validate-pr-title": {
       const title = context.payload.pull_request?.title || "";
-      const regex = new RegExp(regexPattern);
-      if (!regex.test(title)) {
+      if (!new RegExp(regexPattern).test(title)) {
         isFailed = true;
       }
       break;
