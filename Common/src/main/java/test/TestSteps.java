@@ -22,7 +22,7 @@ public class TestSteps {
   public TestSteps openGoogleHomePage() {
     driver.get("https://www.google.com");
     assertThat(driver.getTitle()).withFailMessage("Google homepage title should contain 'Google'")
-        .contains("Google")
+        .contains("Google");
     return this;
   }
 
