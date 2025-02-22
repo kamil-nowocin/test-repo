@@ -88,14 +88,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const postComment = require('./.github/scripts/postComment.js');
+            const postGithubComment = require('./.github/scripts/post-github-comment.js');
             
             const task = process.env.TASK;
             const passMessage = process.env.PASS_MESSAGE;
             const failMessage = process.env.FAIL_MESSAGE;
             const buildResult = process.env.build_result;
             
-            await postComment(github, context, core, {
+            await postGithubComment(github, context, core, {
               task,
               buildResult,
               passMessage,

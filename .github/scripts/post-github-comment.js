@@ -1,4 +1,4 @@
-async function postComment(
+async function postGithubComment(
   github,
   context,
   core,
@@ -52,4 +52,4 @@ async function postComment(
   }
 }
 
-module.exports = postComment;
+module.exports = postGithubComment;
