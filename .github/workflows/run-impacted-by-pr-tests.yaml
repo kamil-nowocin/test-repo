@@ -91,7 +91,7 @@ jobs:
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
-        if: success() || failure()
+        if: always()
         with:
           name: "JUnit Report"
           artifact: "${{ env.SHARED_TEST_MODULE }}-testng-report"

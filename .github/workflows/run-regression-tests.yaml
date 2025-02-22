@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build & Execute Tests 🛠️"
     outputs:
-      shared_test_module: ${{ steps.shared_env.outputs.shared_test_module }}
+      shared_test_module: ${{ steps.set_output.outputs.shared_test_module }}
     env:
       # Common
       BUILD_NUMBER: ${{ github.run_number }}
@@ -161,8 +161,9 @@ jobs:
           retention-days: 5
 
       - name: "Set job outputs"
-        id: shared_env
-        run: echo "shared_test_module=${TEST_MODULE}" >> $GITHUB_OUTPUT
+        id: set_output
+        run: |
+          echo "::set-output name=shared_test_module::${TEST_MODULE}"
         shell: bash
 
   publish-github-report:
@@ -174,7 +175,7 @@ jobs:
     steps:
       - name: "Create GitHub report"
         uses: phoenix-actions/test-reporting@v15
-        if: success() || failure()
+        if: always()
         with:
           name: "JUnit Report"
           artifact: "${{ env.SHARED_TEST_MODULE }}-testng-report"
@@ -185,6 +186,7 @@ jobs:
           max-annotations: 0
 
   publish-allure-report:
+    if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
     needs: build
     runs-on: ubuntu-latest
     name: "Generate Allure Report 📊"
@@ -199,7 +201,6 @@ jobs:
           path: "allure-results"
 
       - name: "Load Allure Report history"
-        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
         uses: actions/checkout@v4
         continue-on-error: true
         with:
@@ -207,7 +208,6 @@ jobs:
           path: gh-pages
 
       - name: "Build Allure Report"
-        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
         uses: simple-elf/allure-report-action@master
         with:
           gh_pages: gh-pages
@@ -216,7 +216,6 @@ jobs:
           keep_reports: 20
 
       - name: "Publish Allure Report"
-        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
