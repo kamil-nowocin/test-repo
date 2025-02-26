@@ -39,7 +39,7 @@ allprojects {
 
         // LOGGING LIBRARIES
         // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-        implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.16'
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.17'
 
         // REPORTING LIBRARIES
         // https://mvnrepository.com/artifact/io.qameta.allure/allure-testng
